@@ -31,19 +31,6 @@ class yii2snapsvg extends baseWidget
     public $options = [];
 
     /**
-     * @var JSExpression event that will be fired after ajax reload
-     *
-     * snapsvg:ajax success
-     *
-     */
-    public $EventAjaxSuccess = NULL;
-
-    /**
-     * @var array HTML attributes for the displayed input
-     */
-    private $_displayOptions = [];
-
-    /**
      * @inerhit doc
      */
     private $_pluginName = 'yii2-snapsvg';
@@ -79,16 +66,10 @@ class yii2snapsvg extends baseWidget
         $view = $this->getView();
 
         /** @var \yii\web\AssetBundle $assetClass */
-        LocalAsset::register($view);
         CoreAsset::register($view);
 
         $cleanOptions = $this->getClientOptions();
-        $js[] = "var dynTable$id = jQuery('#$id').snapsvg($cleanOptions);";
-
-        if(!is_null($this->EventAjaxSuccess)) {
-            $eventSuccess = $this->EventAjaxSuccess;
-            $js[] = "dynTable$id.bind('snapsvg:ajax:success',$eventSuccess);";
-        }
+        $js[] = "var snap$id = Snap('#$id');";
     
         $view->registerJs(implode("\n", $js),View::POS_READY);
     }
@@ -98,16 +79,7 @@ class yii2snapsvg extends baseWidget
      */
     protected function getClientOptions()
     {
-        $options = [];
-        $id = $this->options['id'];
-        /*$options['loading'] = new JsExpression("function(isLoading, view ) {
-                jQuery('#{$id}').find('.fc-loading').toggle(isLoading);
-        }");
-        if ($this->eventRender){
-            $options['eventRender'] = new JsExpression($this->eventRender);
-        }*/
-        $options = array_merge($options, $this->clientOptions);
-        return Json::encode($options);
+        return Json::encode($this->clientOptions);
     }
 
 }
